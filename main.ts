@@ -154,7 +154,10 @@ type Project = {
 
 const portfolioProjects: Project[] = [
   {
-    image: "./Pimages/TeacherInterventionDashboard.png",
+    image: new URL(
+      "./Pimages/TeacherInterventionDashboard.png",
+      import.meta.url,
+    ).href,
     imageAlt: "Teacher Intervention Dashboard",
     title: "Intervention Dashboard",
     technologies: "Next.js, TypeScript, Tailwind, Vitest",
@@ -164,7 +167,7 @@ const portfolioProjects: Project[] = [
     website: "https://teacher-intervention-dashboard.vercel.app/",
   },
   {
-    image: "./Pimages/Summarist-Internship.png",
+    image: new URL("./Pimages/Summarist-Internship.png", import.meta.url).href,
     imageAlt: "Summarist Internship Project",
     title: "Summarist Internship",
     technologies: "HTML, CSS, TypeScript, React, Next.js, Firestore",
@@ -174,7 +177,7 @@ const portfolioProjects: Project[] = [
     website: "https://summarist-internship-kohl.vercel.app/",
   },
   {
-    image: "./Pimages/Skinstric.png",
+    image: new URL("./Pimages/Skinstric.png", import.meta.url).href,
     imageAlt: "Skinstric Internship Project",
     title: "Skinstric Internship",
     technologies: "HTML, CSS, TypeScript, React, Next.js, GSAP animations",
@@ -184,7 +187,7 @@ const portfolioProjects: Project[] = [
     website: "https://skinstric-internship-peach.vercel.app/",
   },
   {
-    image: "./Pimages/FES-Internship.png",
+    image: new URL("./Pimages/FES-Internship.png", import.meta.url).href,
     imageAlt: "Frontend Simplified Internship Project",
     title: "Internship with FES",
     technologies: "HTML, CSS, JavaScript, React, Node",
@@ -194,7 +197,7 @@ const portfolioProjects: Project[] = [
     website: "https://kim-internship-phi.vercel.app/",
   },
   {
-    image: "./Pimages/MovieSearch.png",
+    image: new URL("./Pimages/MovieSearch.png", import.meta.url).href,
     imageAlt: "Movie Search API Project",
     title: "Movie Search API",
     technologies: "HTML, CSS, JavaScript, React",
@@ -204,7 +207,7 @@ const portfolioProjects: Project[] = [
     website: "https://kmb1122.github.io/MovieSearchProject/",
   },
   {
-    image: "./Pimages/Project-Library.png",
+    image: new URL("./Pimages/Project-Library.png", import.meta.url).href,
     imageAlt: "Library Project",
     title: "Library React Project",
     technologies: "HTML, CSS, JavaScript, React",
@@ -216,9 +219,6 @@ const portfolioProjects: Project[] = [
 ];
 
 const projectGrid = $("projectList");
-const projectsMore = $<HTMLButtonElement>("projectsMore");
-const PROJECTS_PER_BATCH = 3;
-let shownProjectCount = 0;
 
 function createProjectCard(project: Project, index: number): HTMLElement {
   const card = document.createElement("article");
@@ -264,22 +264,9 @@ function createProjectCard(project: Project, index: number): HTMLElement {
   return card;
 }
 
-function showNextProjects(): void {
-  const next = portfolioProjects.slice(
-    shownProjectCount,
-    shownProjectCount + PROJECTS_PER_BATCH,
-  );
-  next.forEach((project, offset) => {
-    projectGrid.appendChild(
-      createProjectCard(project, shownProjectCount + offset),
-    );
-  });
-  shownProjectCount += next.length;
-  projectsMore.hidden = shownProjectCount >= portfolioProjects.length;
-}
-
-projectsMore.addEventListener("click", showNextProjects);
-showNextProjects();
+portfolioProjects.forEach((project, index) => {
+  projectGrid.appendChild(createProjectCard(project, index));
+});
 
 /* ---------- Theme toggle ---------- */
 const themeBtn = $<HTMLButtonElement>("themeBtn");
@@ -423,7 +410,7 @@ if (!reduceMotion) {
 }
 
 /* ---------- Contact form (opens the visitor's email app) ---------- */
-const CONTACT_EMAIL = "YOUR_EMAIL@example.com"; // TODO: replace with your address
+const CONTACT_EMAIL = "silverspace@gmail.com";
 $<HTMLFormElement>("f").addEventListener("submit", (e: SubmitEvent) => {
   e.preventDefault();
   const data = new FormData(e.target as HTMLFormElement);
