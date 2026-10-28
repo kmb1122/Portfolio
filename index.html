@@ -15,6 +15,17 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./style.css" />
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"
+    ></script>
+    <script type="text/javascript">
+      (function () {
+        emailjs.init({
+          publicKey: "cYMCtYadw1AaV-lFw",
+        });
+      })();
+    </script>
   </head>
   <body>
     <canvas id="trail" aria-hidden="true"></canvas>
@@ -204,16 +215,23 @@
           </div>
           <form id="f">
             <label
-              >Name<input name="name" required autocomplete="name"
+              >Name<input
+                id="user-name"
+                name="name"
+                required
+                autocomplete="name"
             /></label>
             <label
               >Email<input
+                id="user-email"
                 name="email"
                 type="email"
                 required
                 autocomplete="email"
             /></label>
-            <label>Message<textarea name="msg" required></textarea></label>
+            <label
+              >Message<textarea id="message" name="msg" required></textarea
+            ></label>
             <button class="btn p" type="submit">Send it my way</button>
             <p id="sent" aria-live="polite"></p>
           </form>

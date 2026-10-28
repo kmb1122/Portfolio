@@ -1,6 +1,18 @@
 type Theme = "light" | "dark";
 type Point = { x: number; y: number; t: number };
 
+declare global {
+  interface Window {
+    emailjs: {
+      send: (
+        serviceId: string,
+        templateId: string,
+        templateParams: Record<string, string>,
+      ) => Promise<unknown>;
+    };
+  }
+}
+
 const root = document.documentElement;
 const body = document.body;
 const $ = <T extends HTMLElement = HTMLElement>(id: string): T => {
@@ -409,17 +421,35 @@ if (!reduceMotion) {
   }
 }
 
-/* ---------- Contact form (opens the visitor's email app) ---------- */
-const CONTACT_EMAIL = "silverspace@gmail.com";
-$<HTMLFormElement>("f").addEventListener("submit", (e: SubmitEvent) => {
+/* ---------- Contact form ---------- */
+$<HTMLFormElement>("f").addEventListener("submit", async (e: SubmitEvent) => {
   e.preventDefault();
-  const data = new FormData(e.target as HTMLFormElement);
+  const form = e.currentTarget as HTMLFormElement;
+  const submitButton = form.querySelector<HTMLButtonElement>(
+    'button[type="submit"]',
+  );
+  const sent = $("sent");
+  const data = new FormData(form);
   const name = String(data.get("name") ?? "");
   const email = String(data.get("email") ?? "");
   const msg = String(data.get("msg") ?? "");
-  const subject = encodeURIComponent(`Portfolio message from ${name}`);
-  const bodyText = encodeURIComponent(`${msg}\n\n${name} (${email})`);
-  location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${bodyText}`;
-  $("sent").textContent =
-    "Thank you! I look forward to speaking with you soon.";
+
+  if (submitButton) submitButton.disabled = true;
+  sent.textContent = "Sending your message...";
+
+  try {
+    await window.emailjs.send("service_mbp1cxn", "template_neqjd78", {
+      user_name: name,
+      user_email: email,
+      message: msg,
+    });
+    form.reset();
+    sent.textContent = "Thank you! I look forward to speaking with you soon.";
+  } catch (error) {
+    console.error("EmailJS failed to send the contact form:", error);
+    sent.textContent =
+      "Sorry, your message could not be sent. Please try again later.";
+  } finally {
+    if (submitButton) submitButton.disabled = false;
+  }
 });
